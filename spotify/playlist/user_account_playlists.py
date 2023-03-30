@@ -1,14 +1,17 @@
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
-import playlist
+from playlist import amogus
+from playlist.playlist import Playlist
 
 
 class user_account_playlists:
     def __init__(self, spotifyAPI):
         self.current_users_playlists = []
         self.add_playlists(spotifyAPI)
+        self.spotify = spotifyAPI.sp
 
-    def add_playlists(self, spotifyAPI):
+    # adds all user playlists to self.current_users_playlists
+    def add_playlists(self, spotifyAPI): 
         results = spotifyAPI.sp.current_user_playlists()
         self.current_users_playlists = results['items']
         # print(results.keys())
@@ -22,8 +25,30 @@ class user_account_playlists:
     def get_playlist_by_name(self, name):
         for playlist in self.current_users_playlists:
             if playlist['name'] == name:
-                return playlist
-        raise ValueError(f"Playlist with name '{name}' not found.")
+                return Playlist(playlist)
+        raise ValueError(f"Playlist with name '{name}' not found.")     
+    
+                # tracks = []
+                # playlist_id = playlist['id']
+                # playlist_tracks = self.spotify.playlist_tracks(playlist_id)['items']
+                # print(f"items is: {playlist_tracks[0]['track'].keys()}") #items is: dict_keys(['added_at', 'added_by', 'is_local', 'primary_color', 'track', 'video_thumbnail'])
+                
+                
+                # for item in playlist_tracks:
+                #     track = item['track']
+                #     tracks.append({
+                #         'name': track['name'],
+                #         'artist': track['artists'][0]['name'],
+                #         'album': track['album']['name']
+                #     })
+                # print(f"tracks are {tracks}")
+                # return tracks
+        
+
+
+
+
+
 
 
 
