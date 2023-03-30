@@ -7,7 +7,11 @@ class playlist_tests():
         playlist_obj = user_account_playlists.user_account_playlists(spotifyAPI)
         
         expected_name1 = "Chill V3"
-        print(playlist_obj.get_playlist_by_name("Chill V3")['name'])
+        assert playlist_obj.get_playlist_by_name("Chill V3").name == expected_name1, f"get_playlist_by_name DID NOT MATCH, Expected: {expected_name1}, Actual: { playlist_obj.get_playlist_by_name('Chill V3').name }"
+        # track_names = x.get_track_names()
+        # print(track_names)
+        
+        # playlist_obj.get_playlist_by_name("Chill V3")['name']
         # assert playlist_obj.get_playlist_by_name("Chill V3")['name'] == expected_name1, f"get_playlist_by_name DID NOT MATCH, Expected: {expected_name1}, Actual: {playlist_obj.get_playlist_by_name('Chill V3')['name']}"
         
         # assert playlist_obj.current_users_playlists_names == []
