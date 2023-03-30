@@ -33,7 +33,7 @@ class user_account_playlists:
             print(f"Error creating playlist: {str(e)}")
             return None
 
-    def change_users_playlist_name(self, old_playlist_name, new_playlist_name):
+    def change_playlist_name(self, old_playlist_name, new_playlist_name):
         try:
             playlist = self.get_playlist_by_name(old_playlist_name)
             self.spotify.user_playlist_change_details(user=self.user_id, playlist_id=playlist.id, name=new_playlist_name)
@@ -44,11 +44,18 @@ class user_account_playlists:
             print(f"Error updating playlist name: {str(e)}")
 
 
+    def change_playlist_description(self, playlist_name, new_decription):
+        try:
+            playlist = self.get_playlist_by_name(playlist_name)
+            old_description = playlist.description
+            print(old_description)
+            self.spotify.user_playlist_change_details(user=self.user_id, playlist_id=playlist.id, description=new_decription)
+            print(f"Playlist description updated: {old_description} -> {new_decription}")
+        except ValueError:
+            print(f"Error: Playlist '{playlist_name}' not found.")
+        except Exception as e:
+            print(f"Error updating playlist description: {str(e)}")
 
-
-
-
-        
         
         
         

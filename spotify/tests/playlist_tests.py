@@ -8,6 +8,8 @@ class playlist_tests():
         
         expected_name1 = "Chill V3"
         assert playlist_obj.get_playlist_by_name("Chill V3").name == expected_name1, f"get_playlist_by_name DID NOT MATCH, Expected: {expected_name1}, Actual: { playlist_obj.get_playlist_by_name('Chill V3').name }"
+        playlist_test(playlist_obj=playlist_obj)
+        
         # track_names = x.get_track_names()
         # print(track_names)
         
@@ -21,3 +23,13 @@ class playlist_tests():
         # assert len(playlist_obj.current_users_playlists_names) != 0,f"len of playlist_obj.current_users_playlists_names DID NOT MATCH. Expected: {0}, Actual: {len(playlist_obj.current_users_playlists_names)}"
 
         
+def playlist_test(playlist_obj):
+    """"
+    creates a playlist if the name doesnt exist
+    """
+    if not playlist_obj.get_playlist_by_name("hello world"):
+        print("playlist not found, creating playlist...") 
+        playlist_obj.create_playlist("hello world", "this is the description")
+        
+    # playlist_obj.change_playlist_name("hello world", "goodbye world")
+    # playlist_obj.change_playlist_description("hello world", "new description")
