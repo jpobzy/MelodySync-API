@@ -9,67 +9,69 @@ class user_account_playlists:
         self.current_users_playlists = []
         self.add_playlists(spotifyAPI)
         self.spotify = spotifyAPI.sp
-
+        self.user_id = self.spotify.current_user()['id']
+        
     # adds all user playlists to self.current_users_playlists
     def add_playlists(self, spotifyAPI): 
         results = spotifyAPI.sp.current_user_playlists()
         self.current_users_playlists = results['items']
-        # print(results.keys())
+
+    
+    def get_playlist_by_name(self, name):
+        for playlist in self.current_users_playlists:
+            if playlist['name'] == name:
+                return Playlist(playlist)
+        # raise ValueError(f"Playlist with name '{name}' not found.")     
+        print(f"Playlist with name '{name}' not found.")
+        return None
+    
+    def create_playlist(self, name, description):
+        try:
+            playlist = self.spotify.user_playlist_create(self.user_id, name, description=description)
+            return playlist
+        except Exception as e:
+            print(f"Error creating playlist: {str(e)}")
+            return None
+
+    def change_users_playlist_name(self, old_playlist_name, new_playlist_name):
+        try:
+            playlist = self.get_playlist_by_name(old_playlist_name)
+            self.spotify.user_playlist_change_details(user=self.user_id, playlist_id=playlist.id, name=new_playlist_name)
+            print(f"Playlist name updated: {old_playlist_name} -> {new_playlist_name}")
+        except ValueError:
+            print(f"Error: Playlist '{old_playlist_name}' not found.")
+        except Exception as e:
+            print(f"Error updating playlist name: {str(e)}")
+
+
+
+
+
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+                # print(results.keys())
         # print([playlist['name'] for playlist in results['items']])
         # print(results['items'][4]['description'])
         # x = [playlist['name'] for playlist in results['items']]
         # print(x)
         # ['collaborative', 'description', 'external_urls', 'href', 'id', 'images', 'name', 'owner', 'primary_color', 'public', 'snapshot_id', 'tracks', 'type', 'uri'])
         # print(results)
-    
-    def get_playlist_by_name(self, name):
-        for playlist in self.current_users_playlists:
-            if playlist['name'] == name:
-                return Playlist(playlist)
-        raise ValueError(f"Playlist with name '{name}' not found.")     
-    
-                # tracks = []
-                # playlist_id = playlist['id']
-                # playlist_tracks = self.spotify.playlist_tracks(playlist_id)['items']
-                # print(f"items is: {playlist_tracks[0]['track'].keys()}") #items is: dict_keys(['added_at', 'added_by', 'is_local', 'primary_color', 'track', 'video_thumbnail'])
-                
-                
-                # for item in playlist_tracks:
-                #     track = item['track']
-                #     tracks.append({
-                #         'name': track['name'],
-                #         'artist': track['artists'][0]['name'],
-                #         'album': track['album']['name']
-                #     })
-                # print(f"tracks are {tracks}")
-                # return tracks
-        
-
-
-
-
-
-
-
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
 
     # def find_current_users_playlists_names(self):
