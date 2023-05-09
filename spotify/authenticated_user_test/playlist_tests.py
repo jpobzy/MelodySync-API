@@ -4,12 +4,12 @@ class playlist_tests():
     def run_tests(spotifyAPI):
         # print("BEGINNING TEST RUNS for user_account_playlist")
         expected_users_playlists = ['Songs To Play In The Gym by RapTV', 'Requests', 'Chill', 'Chill V2', 'Chill V3', 'Chill V4', 'Chill v5', 'Christmas shit', 'Hs1', 'Hs2', 'Hs3', 'Hs4', 'L4D Frag music ', 'Mellow', 'Ms/Hs fav ', 'Ms/Hs V1', 'Old shit', '🅿️', 'Radio shit', 'Radio shit V0.25', 'Radio shit V0.5', 'Radio shit V0.75', 'Random rap in my library V1', 'Random rap in my library V2', 'Random rap in my library V3', 'Random rap in my library V4', 'Random rap in my library V5', 'Santa szn', 'Spooky szn', 'Sad Boi Hours', "Let's Get Railed", 'free thug', 'Springter', 'Radio shitv1', 'best xmas playlist ', '😨', '🎉🎊🎉', 'Urbano Latino', '🚹♿️🚺', '🍸🍸🍸', 'Shower Shit']
-        playlist_obj = user_account_playlists.user_account_playlists(spotifyAPI)
-        
+        playlist_obj = user_account_playlists.UserAccountPlaylists(spotifyAPI)
+                
         expected_name1 = "Chill V3"
         assert playlist_obj.get_playlist_by_name("Chill V3").name == expected_name1, f"get_playlist_by_name DID NOT MATCH, Expected: {expected_name1}, Actual: { playlist_obj.get_playlist_by_name('Chill V3').name }"
         playlist_test(playlist_obj=playlist_obj)
-        
+        playlist_obj.change_playlist_visibility("hello world", False)
         # track_names = x.get_track_names()
         # print(track_names)
         
@@ -33,3 +33,4 @@ def playlist_test(playlist_obj):
         
     # playlist_obj.change_playlist_name("hello world", "goodbye world")
     # playlist_obj.change_playlist_description("hello world", "new description")
+    

@@ -1,4 +1,7 @@
 class Playlist:
+    """"
+    Playlist class
+    """
     def __init__(self, playlist):
         self.collaborative = playlist['collaborative']
         self.description = playlist['description']
@@ -14,7 +17,3 @@ class Playlist:
         self.tracks = playlist['tracks']
         self.type = playlist['type']
         self.uri = playlist['uri']
-
-    
-    
-    
