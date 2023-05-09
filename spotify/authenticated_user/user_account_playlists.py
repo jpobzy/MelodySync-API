@@ -4,7 +4,6 @@ class UserAccountPlaylists:
     """"
     Gives an authenticated user access to interact with their own playlists
     """
-
     def __init__(self, spotifyAPI):
         self.current_users_playlists = []
         self.add_playlists(spotifyAPI)
@@ -27,7 +26,6 @@ class UserAccountPlaylists:
                 return playlist.Playlist(i)
         raise ValueError(f"Playlist with name '{name}' not found.")
 
-
     def create_playlist(self, name, description):
         """"
         Creates a playlist in the authenticated users account
@@ -39,7 +37,7 @@ class UserAccountPlaylists:
         except Exception as e:
             raise ValueError(f"Error creating playlist: {str(e)}")
   
-    def change_playlist_name(self, old_playlist_name, new_playlist_name):
+    def update_playlist_name(self, old_playlist_name, new_playlist_name):
         """"
         Updates a users playlist name
         """
@@ -54,7 +52,7 @@ class UserAccountPlaylists:
         except Exception as e:
             print(f"Error updating playlist name: {str(e)}")
 
-    def change_playlist_description(self, playlist_name, new_decription):
+    def update_playlist_description(self, playlist_name, new_decription):
         try:
             playlist = self.get_playlist_by_name(playlist_name)
             old_description = playlist.description
@@ -67,7 +65,7 @@ class UserAccountPlaylists:
         except Exception as e:
             print(f"Error updating playlist description: {str(e)}")
 
-    def change_playlist_visibility(self, playlist_name, visibility_bool):
+    def update_playlist_visibility(self, playlist_name, visibility_bool):
         if not isinstance(visibility_bool, bool):
             print(f"Error: 'visibility_bool' parameter must be a boolean value")
         try:
