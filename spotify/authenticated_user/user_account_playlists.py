@@ -10,7 +10,6 @@ class UserAccountPlaylists:
         self.add_playlists(spotifyAPI)
         self.spotify = spotifyAPI.sp
         self.user_id = self.spotify.current_user()['id']
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 
     def add_playlists(self, spotifyapi):
         """
@@ -26,22 +25,20 @@ class UserAccountPlaylists:
         for i in self.current_users_playlists:
             if i['name'] == name:
                 return playlist.Playlist(i)
-        # raise ValueError(f"Playlist with name '{name}' not found.")
-        print(f"Playlist with name '{name}' not found.")
-        return None
+        raise ValueError(f"Playlist with name '{name}' not found.")
+
 
     def create_playlist(self, name, description):
         """"
         Creates a playlist in the authenticated users account
         """
         try:
-            playlist = self.spotify.user_playlist_create(
-                self.user_id, name, description)
-            return playlist
+            new_playlist = self.spotify.user_playlist_create(
+                user=self.user_id, name=name, description=description)
+            return playlist.Playlist(new_playlist) 
         except Exception as e:
-            print(f"Error creating playlist: {str(e)}")
-            return None
-
+            raise ValueError(f"Error creating playlist: {str(e)}")
+  
     def change_playlist_name(self, old_playlist_name, new_playlist_name):
         """"
         Updates a users playlist name
@@ -90,11 +87,11 @@ class UserAccountPlaylists:
         # ['collaborative', 'description', 'external_urls', 'href', 'id', 'images', 'name', 'owner', 'primary_color', 'public', 'snapshot_id', 'tracks', 'type', 'uri'])
         # print(results)
 
-    # def find_current_users_playlists_names(self):
-    #     self.current_users_playlists_names = []
-    #     for playlist in self.current_users_playlists['items']:
-    #         self.current_users_playlists_names.append(playlist["name"])
-    #     return self.current_users_playlists_names
+    def find_current_users_playlists_names(self):
+        self.current_users_playlists_names = []
+        for playlist in self.current_users_playlists:
+            self.current_users_playlists_names.append(playlist["name"])
+        return self.current_users_playlists_names
 
     # def get_specific_playlist(self, playlist_detection_input):
     #     users_current_playlists = self.find_current_users_playlists_names()

@@ -3,3 +3,4 @@ __pycache__/
 spotify/main.py
 pip installs.txt
 spotify/playlist/amogus.py
+.cache

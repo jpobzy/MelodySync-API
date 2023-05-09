@@ -10,5 +10,4 @@ class AuthenticatedUserInnitTests():
         assert spotify.get_profile_image_url() == expected_image_url, f"GET DISPLAY NAMES DID NOT MATCH. Expected: {expected_display_name}, Actual: {spotify.get_profile_image_url()}"
         assert spotify.get_uri() == expected_uri, f"GET DISPLAY NAMES DID NOT MATCH. Expected: {expected_display_name}, Actual: {spotify.get_uri()}"
 
-    # def nordaxion_spotify(spotify)
-    #https://open.spotify.com/user/nordaxion?si=8b056463fba249a5
+
