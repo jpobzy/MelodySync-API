@@ -1,24 +1,39 @@
 from item.track import Track
 
 class currentTrackUpdater:
+    """"
+    Innitializes the access to an autheticated users current state
+    """
     def __init__(self, spotify):
         self.sp = spotify.sp
         self.current_state = self.sp.current_playback()
         
     def pause(self):
+        """"
+        Pauses the users music
+        """
         if self.sp.current_playback() is not None:
             self.sp.pause_playback()
         
     
     def resume(self):
+        """"
+        Resumes the users music
+        """
         if self.current_state is not None:
             self.sp.start_playback()
     
     def skip(self):
+        """"
+        Skips the current song the user is listening to
+        """
         if self.current_state is not None:
            self.sp.next_track()
 
     def shuffle(self):
+        """
+        Enables/disables shuffle
+        """
         if self.current_state is not None:
             shuffle_state = self.current_state['shuffle_state']
             if shuffle_state == False:
@@ -27,6 +42,9 @@ class currentTrackUpdater:
                 self.sp.shuffle(False)
         
     def repeat(self):
+        """
+        Enables/disables repeat
+        """
         if self.current_state is not None:
             repeat_state = self.current_state['repeat_state']
             if repeat_state == 'off':
@@ -37,6 +55,9 @@ class currentTrackUpdater:
                 self.sp.repeat('off')
         
     def volume(self, volume):
+        """
+        Adjust music volume
+        """
         if self.current_state is not None:
             if 0 <= volume <=100:
                 self.sp.volume(volume)
@@ -44,10 +65,16 @@ class currentTrackUpdater:
                 raise ValueError("Volume input must be between 0-100")
 
     def previous_track(self):
+        """
+        Stops current song and plays previous song
+        """
         if self.current_state is not None:
             self.sp.previous_track()
     
     def play_track(self, track_name, track_artist = ""):
+        """
+        Play a track given a track name and optional track artist
+        """
         if self.current_state is not None:
             query = f'track:"{track_name}" artist:"{track_artist}"'
             results = self.sp.search(q=query, type='track', limit=1)
@@ -58,6 +85,9 @@ class currentTrackUpdater:
                 raise ValueError("Could not find a song")
     
     def add_track_to_queue(self, track_name, track_artist = ""):
+        """
+        Adds a track given a track name and optional track artist to queue
+        """
         if self.current_state is not None:
             query = f'track:"{track_name}" artist:"{track_artist}"'
             results = self.sp.search(q=query, type='track', limit=1)
@@ -69,9 +99,11 @@ class currentTrackUpdater:
        
     
     def play_playlist(self, playlist_name="", playlist_uri="", playlist_link=""):
+        """
+        Plays a playlist given a playlist name(if playlist exists in users library), 
+        playlist uri or playlist link
+        """
         if self.current_state is not None and any([playlist_name, playlist_uri, playlist_link]):
-            print(1)
-                # Handle playing the playlist based on the provided inputs
             if playlist_uri:
                 self.sp.start_playback(context_uri=playlist_uri)
             elif playlist_link:

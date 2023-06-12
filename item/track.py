@@ -1,4 +1,7 @@
 class Track:
+    """"
+    Track class
+    """
     def __init__(self, track):
         self.album = track['album']
         self.artists = track['artists']

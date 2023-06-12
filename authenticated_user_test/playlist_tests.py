@@ -40,7 +40,6 @@ class AuthenticatedUserPlaylistTests():
         """
         Creates 
         """
-        +
         playlist_name = "playlist A"
         playlist_description =  "update_playlist_name_test description"
         new_playlist = playlist_obj.create_playlist(playlist_name, playlist_description)
