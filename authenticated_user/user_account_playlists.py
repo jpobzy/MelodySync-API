@@ -1,28 +1,34 @@
 from item import playlist
+from item.database import Database
+from authenticated_user.innit import AuthenticatedUser
 
-class UserAccountPlaylists:
+
+class UserAccountPlaylists(AuthenticatedUser):
     """"
     Gives an authenticated user access to interact with their own playlists
     """
-    def __init__(self, spotifyAPI):
-        self.current_users_playlists = []
-        self.add_playlists(spotifyAPI)
-        self.spotify = spotifyAPI.sp
+    def __init__(self, client_id, client_secret, redirect_uri, scope):
+        super().__init__(client_id=client_id, client_secret=client_secret,
+                         redirect_uri=redirect_uri, scope=scope)
+        self.spotify = self.sp
         self.user_id = self.spotify.current_user()['id']
-
+        self.add_playlists(self.sp)
+        
+        
     def add_playlists(self, spotifyapi):
         """
         adds all user playlists to self.current_users_playlists
         """
-        results = spotifyapi.sp.current_user_playlists()
+        results = spotifyapi.current_user_playlists()
         self.current_users_playlists = results['items']
-
+        
+        
     def get_playlist_by_name(self, name):
         """"
         returns a playlist object
         """
         for i in self.current_users_playlists:
-            if i['name'] == name:
+            if i['name'].strip().lower() == name.strip().lower():
                 return playlist.Playlist(i)
         raise ValueError(f"Playlist with name '{name}' not found.")
 
@@ -41,16 +47,16 @@ class UserAccountPlaylists:
         """"
         Updates a users playlist name
         """
-        try:
-            playlist = self.get_playlist_by_name(old_playlist_name)
-            self.spotify.user_playlist_change_details(
-                user=self.user_id, playlist_id=playlist.id, name=new_playlist_name)
-            print(
-                f"Playlist name updated: {old_playlist_name} -> {new_playlist_name}")
-        except ValueError:
-            print(f"Error: Playlist '{old_playlist_name}' not found.")
-        except Exception as e:
-            print(f"Error updating playlist name: {str(e)}")
+        # try:
+        playlist = self.get_playlist_by_name(old_playlist_name)
+        self.spotify.user_playlist_change_details(
+            user=self.user_id, playlist_id=playlist.id, name=new_playlist_name)
+        print(
+            f"Playlist name updated: {old_playlist_name} -> {new_playlist_name}")
+        # except ValueError:
+        #     raise ValueError(f"Error: Playlist '{old_playlist_name}' not found.")
+        # except Exception as e:
+        #     raise Exception(f"Error updating playlist name: {str(e)}")
 
     def update_playlist_description(self, playlist_name, new_decription):
         try:
@@ -90,7 +96,93 @@ class UserAccountPlaylists:
         for playlist in self.current_users_playlists:
             self.current_users_playlists_names.append(playlist["name"])
         return self.current_users_playlists_names
+    
+    
+    def add_songs_to_db(self, playlist_name, database_name):
+        playlist_id = self.get_playlist_by_name(playlist_name).id
+        db = Database(database_name)
+        db.create_table()
+        
+        offset = 0
+        limit = 100
+        total_tracks = 0
+        tracks = []
 
+        while True:
+            results = self.spotify.playlist_tracks(playlist_id, offset=offset, limit=limit)
+            tracks.extend(results['items'])
+            offset += limit
+            total_tracks += len(results['items'])
+
+            if total_tracks >= results['total']:
+                break
+ 
+        #####ADDING NONE TYPES SOMEHOW
+        playlist_id = db.create_playlist(playlist_name)
+        count = 0
+
+        print(len(tracks))
+        for track in tracks:
+            try:
+                if 'track' in track and 'name' in track['track']:
+                    song_name = track['track']['name']
+                    artist = track['track']['artists'][0]['name']
+                    album = track['track']['album']['name']
+                    count += 1
+                    db.store_song_in_playlist(playlist_id, song_name, artist, album)
+                else:
+                    print('Invalid track:', track)
+            except Exception as e:
+                print('Error processing track:', track)
+                print('Error message:', str(e))
+
+        print('Number of songs:', count)
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # def add_songs_to_db(self, playlist_name, database_name):
+        
+    #     playlist_id = self.get_playlist_by_name(playlist_name).id
+    #     db = Database(database_name)
+    #     db.create_table()
+    #     results = self.spotify.playlist_tracks(playlist_id)
+    #     tracks = results['items']
+        
+    #     while results['next']:
+    #         results = self.spotify.next(results)
+    #         tracks.extend(results['items'])
+            
+    #     playlist_id = db.create_playlist(playlist_name)
+    #     count = 0
+    #     for track in tracks:
+    #         song_name = track['track']['name']
+    #         artist = track['track']['artists'][0]['name']
+    #         album = track['track']['album']['name']
+    #         count += 1
+           
+    #         db.store_song_in_playlist(playlist_id, song_name, artist, album)
+    #     print(count)        
+            
+            
+            
+            
+            
+            
+            
+            
+            
+    
     # def get_specific_playlist(self, playlist_detection_input):
     #     users_current_playlists = self.find_current_users_playlists_names()
     #     if playlist_detection_input in users_current_playlists:
@@ -109,3 +201,4 @@ class UserAccountPlaylists:
     #     return playlist_name.split("/")[-1]
 
     # def get_playlist(self, playlist_id):
+

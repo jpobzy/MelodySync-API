@@ -1,27 +1,34 @@
 from item.track import Track
+from authenticated_user.innit import AuthenticatedUser
 
-class currentTrackUpdater:
+
+class CurrentTrackUpdater(AuthenticatedUser):
     """"
-    Innitializes the access to an autheticated users current state
+    Initializes the access to an authenticated user's current state
     """
-    def __init__(self, spotify):
-        self.sp = spotify.sp
+    def __init__(self, client_id, client_secret, redirect_uri, scope):
+        super().__init__(client_id=client_id, client_secret=client_secret,
+                         redirect_uri=redirect_uri, scope=scope)
         self.current_state = self.sp.current_playback()
         
     def pause(self):
         """"
-        Pauses the users music
+        Pauses the user's music
         """
         if self.sp.current_playback() is not None:
-            self.sp.pause_playback()
-        
+            play_state = self.current_state['is_playing']
+            if play_state == False:
+                self.sp.start_playback()
+            else:
+                self.sp.pause_playback()
+
     
     def resume(self):
         """"
-        Resumes the users music
+        Resumes the user's music
         """
-        if self.current_state is not None:
-            self.sp.start_playback()
+        self.pause()
+
     
     def skip(self):
         """"
@@ -112,10 +119,12 @@ class currentTrackUpdater:
             else:
                 playlists = self.sp.current_user_playlists()
                 for playlist in playlists['items']:
-                    if playlist['name'].strip().lower() == playlist_name.strip().lower():
+                    if str(playlist['name']).strip().lower().replace(" ", "") == playlist_name.strip().lower().replace(" ", ""):
                         self.sp.start_playback(context_uri=playlist['uri'])
-
+                        return
+                raise ValueError("playlist not found")
     
+                
 
 
 
