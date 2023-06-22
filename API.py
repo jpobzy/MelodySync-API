@@ -68,9 +68,9 @@ class API:
         """"
         Resumes the user's music
         """
-        current_state = self.spotify.current_playback()
-        if current_state is not None:
-            play_state = current_state['is_playing']
+        self.get_current_state()
+        if self.current_state is not None:
+            play_state = self.current_state['is_playing']
             if not play_state:
                 self.spotify.start_playback()
     
@@ -78,6 +78,7 @@ class API:
         """"
         Skips the current song the user is listening to
         """
+        self.get_current_state()
         if self.current_state is not None:
            self.spotify.next_track()
 
@@ -85,6 +86,7 @@ class API:
         """
         Enables/disables shuffle
         """
+        self.get_current_state()
         if self.current_state is not None:
             shuffle_state = self.current_state['shuffle_state']
             self.spotify.shuffle(not shuffle_state)
@@ -94,6 +96,7 @@ class API:
         """
         Enables/disables repeat
         """
+        self.get_current_state()
         if self.current_state is not None:
             repeat_state = self.current_state['repeat_state']
             if repeat_state == 'off':
@@ -110,6 +113,7 @@ class API:
         """
         Adjust music volume
         """
+        self.get_current_state()
         if self.current_state is not None:
             if 0 <= volume <=100:
                 self.spotify.volume(volume)
@@ -121,6 +125,7 @@ class API:
         """
         Stops current song and plays previous song
         """
+        self.get_current_state()
         if self.current_state is not None:
             self.spotify.previous_track()
 
@@ -128,6 +133,7 @@ class API:
         """
         Play a track given a track name and optional track artist
         """
+        self.get_current_state()
         if self.current_state is not None:
             query = f'track:"{track_name}" artist:"{track_artist}"'
             results = self.spotify.search(q=query, type='track', limit=1)
@@ -143,6 +149,7 @@ class API:
         """
         Adds a track given a track name and optional track artist to queue
         """
+        self.get_current_state()
         if self.current_state is not None:
             query = f'track:"{track_name}" artist:"{track_artist}"'
             results = self.spotify.search(q=query, type='track', limit=1)
@@ -158,6 +165,7 @@ class API:
         Plays a playlist given a playlist name(if playlist exists in users library), 
         playlist uri or playlist link
         """
+        self.get_current_state()    
         if self.current_state is not None and any([playlist_name, playlist_uri, playlist_link]):
             if playlist_uri:
                 self.spotify.start_playback(context_uri=playlist_uri)
@@ -468,14 +476,25 @@ class API:
                     print('Error processing track:', track)
                     print('Error message:', str(e))
                     
-
- 
+    def delete_playlist(self, playlist_name):
+        """
+        Creates a recovery database containing the songs of the deleted playlist in case it needs to be recovered
+        """
+        pass
     
-
-
-if __name__ == "__main__":
-    x = API()
-    x.create_backup_library()
-
-
-
+    def recover_playlist(self, playlist_name):
+        """
+        recovers a deleted playlist if it exists in the recover database
+        """
+        pass
+    
+    def recover_all(self):
+        """
+        recover ALL playlists in the recover database
+        """
+    
+    def remove_song_from_playlist(self, playlist_name):
+        """
+        remove song from playlist
+        """
+        
