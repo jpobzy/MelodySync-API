@@ -1,13 +1,10 @@
 from src.app.App import App
 import time
 
-def commands():
-    while True:
-        new_input = input("Enter your command: ")
+def commands(new_input):
         start_time = time.time()
         if new_input == "q":
             print("Exiting app")
-            break
         elif new_input == "play" or new_input == "resume" or new_input == 'p':
             App().toggle_pause_play()
         elif new_input == "skip":
@@ -25,24 +22,6 @@ def commands():
             App().volume(new_input.replace('volume', '').strip())
         else:
             print("Unknown command")
-            
         end_time = time.time()
         runtime = end_time - start_time
         print("Runtime:", runtime, "seconds")  
-          
-def main():
-    api = App()  # Create an instance of the API class
-    # Call the display_name function
-    start_time = time.time()
-
-    api.current_track_info()
-    
-    end_time = time.time()
-
-    runtime = end_time - start_time
-    print("Runtime:", runtime, "seconds")
-
-
-if __name__ == "__main__":
-    main()
-    # commands()

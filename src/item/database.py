@@ -1,11 +1,14 @@
 import sqlite3
+import os
 
 class Database:
     def __init__(self, db_file):
         if not db_file.endswith('.db'):
             db_file += '.db'
+            
+        db_path = os.path.join('database', db_file)
         
-        self.conn = sqlite3.connect(db_file)
+        self.conn = sqlite3.connect(db_path)
         self.cursor = self.conn.cursor()
 
 
@@ -45,14 +48,17 @@ class Database:
         return self.cursor.fetchall()
 
 
- ###########################################################################################
+###########################################################################################
+################################ BACKUP PLAYLIST FUNCTIONS ################################
+###########################################################################################
  
     def create_backup_library(self):
         self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS backup_playlists(
                 playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 playlist_name TEXT,
-                user_playlist_id TEXT  
+                user_playlist_id TEXT,
+                song_amount TEXT
             )
         ''')
         
@@ -67,8 +73,8 @@ class Database:
             )                    
         ''')
     
-    def create_backup_playlist(self, playlist_name, playlist_id):
-        self.cursor.execute('INSERT INTO backup_playlists (playlist_name, user_playlist_id) VALUES (?, ?)', (playlist_name, playlist_id))
+    def create_backup_playlist(self, playlist_name, playlist_id, song_amount):
+        self.cursor.execute('INSERT INTO backup_playlists (playlist_name, user_playlist_id, song_amount) VALUES (?, ?, ?)', (playlist_name, playlist_id, song_amount))
         self.conn.commit()
         return self.cursor.lastrowid
     
