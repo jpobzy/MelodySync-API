@@ -3,8 +3,8 @@ from src.item.response import new_response
 import webbrowser
 
 class UserInfo:
-    def __init__(self):
-        self.api = API()
+    def __init__(self, api):
+        self.api = api
         
     def user_info(self):
         """

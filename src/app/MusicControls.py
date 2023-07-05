@@ -2,8 +2,8 @@ from .__innit__ import API
 from src.item.response import new_response
 
 class MusicControls:
-    def __init__(self):
-        self.api = API()
+    def __init__(self, api):
+        self.api = api
         
     def playback_state(self):
         """

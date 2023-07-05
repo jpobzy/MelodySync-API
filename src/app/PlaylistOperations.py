@@ -1,4 +1,4 @@
-from .__innit__ import API
+from src.app.UserInfo import UserInfo
 from src.item.response import new_response
 from src.item.playlist import Playlist
 from src.item.track import Track
@@ -6,8 +6,9 @@ from src.app.UserInfo import UserInfo
 import random
 
 class PlaylistOperations:
-    def __init__(self):
-        self.api = API()
+    def __init__(self, api):
+        self.api = api
+        self.id = UserInfo(api).user_id
     
     def get_playlist_by_name(self, playlist_name):
         """
@@ -24,11 +25,11 @@ class PlaylistOperations:
                     return Playlist(i)
         raise ValueError(f"Playlist with name '{playlist_name}' not found.")
       
-    def update_playlist_name(self, old_playlist_name, new_playlist_name, new_playlsit_description):
+    def update_playlist_name(self, old_playlist_name, new_playlist_name):
         """
         Updates a user's playlist name
         """   
-        if any([old_playlist_name, new_playlist_name, new_playlsit_description]):
+        if any([old_playlist_name, new_playlist_name]):
             playlist_id = self.get_playlist_by_name(old_playlist_name).id
             json ={
                 'name': new_playlist_name,
@@ -47,6 +48,12 @@ class PlaylistOperations:
             new_response.put(f'/playlists/{playlist_id}', self.api.token, json=json)  
       
     def update_playlist_visibility(self, playlist_name, visibility_status):
+        """Updates Playlist visibility
+
+        Args:
+            playlist_name (string): playlist name in library
+            visibility_status (bool): True = Private, False == Public
+        """
         if any([playlist_name, visibility_status]) and visibility_status == True or visibility_status == False:
             playlist_id = self.get_playlist_by_name(playlist_name).id
             json ={
@@ -55,6 +62,12 @@ class PlaylistOperations:
             new_response.put(f'/playlists/{playlist_id}', self.api.token, json=json)   
               
     def update_playlist_collaborative(self, playlist_name, collaborative_status):
+        """Update the playlist to be collaborative or not, Note: You can only set collaborative to true on non-public playlists
+
+        Args:
+            playlist_name (string): playlist name in library
+            collaborative_status (bool): True = collaborative, False == non collaborative
+        """
         if any([playlist_name, collaborative_status]) and collaborative_status == True or collaborative_status == False:
             playlist = self.get_playlist_by_name(playlist_name)
             playlist_id = playlist.id
@@ -147,9 +160,7 @@ class PlaylistOperations:
             json = {'tracks': [{'uri': track.uri}]}
 
         response = new_response.delete(f'/playlists/{playlist.id}/tracks', self.api.token, json=json)
-        return response
-      
-            
+        return response     
       
     def create_playlist(self, playlist_name, playlist_description, public_status=True):
             """
@@ -164,7 +175,6 @@ class PlaylistOperations:
                 }
                 response = new_response.post(f'/users/{self.id()}/playlists', self.api.token,json=json, application_json_headers_bool=True)
                 return response          
-
         
     def duplicate_playlist(self, playlist_name):
         playlist = self.get_playlist_by_name(playlist_name)
@@ -182,8 +192,6 @@ class PlaylistOperations:
         for i in range(0, len(song_uri_list), chunk_size):
             chunk = song_uri_list[i:i + chunk_size]
             self.add_songs_to_playlist(song_uri_list=chunk, playlist_id=new_playlist['id'])
-
-
 
     def shuffle_playlist(self, playlist_name):      
         playlist = self.get_playlist_by_name(playlist_name)
@@ -209,11 +217,9 @@ class PlaylistOperations:
             chunk2 = shuffle_song_uri_list[i:i + chunk_size2]
             self.add_songs_to_playlist(song_uri_list=chunk2, playlist_id=playlist.id)
 
-
     def get_playlist_count(self):
         """
         Returns the number of playlists owned or followed by a Spotify user
         """
-        print()
-        response = new_response.get(f'/users/{UserInfo().user_id()}/playlists', self.api.token)
+        response = new_response.get(f'/users/{self.id()}/playlists', self.api.token)
         return response['total']

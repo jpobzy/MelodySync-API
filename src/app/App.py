@@ -2,10 +2,22 @@ from src.app.UserInfo import UserInfo
 from src.app.MusicControls import MusicControls
 from src.app.PlaylistOperations import PlaylistOperations
 from src.app.DatabaseOperations import DatabaseOperations
+from src.app.AlbumOperations import AlbumOperations
+from src.app.ArtistOperations import ArtistOperations
+from src.app.SearchOperations import Search_operations
+from src.app.__innit__ import API
 
-class App(UserInfo, MusicControls, PlaylistOperations, DatabaseOperations):
+from src.item.album import Album
+
+class App(Album, Search_operations,UserInfo, MusicControls, PlaylistOperations, DatabaseOperations, AlbumOperations, ArtistOperations):
     def __init__(self):
-        UserInfo.__init__(self)
-        MusicControls.__init__(self)
-        PlaylistOperations.__init__(self)
-        DatabaseOperations.__init__(self)
+        api = API()
+        UserInfo.__init__(self, api)
+        MusicControls.__init__(self, api)
+        PlaylistOperations.__init__(self, api)
+        DatabaseOperations.__init__(self, api)
+        Search_operations.__init__(self, api)
+        # Search_operations.__init__(self, api)
+        
+        # AlbumOperations.__init__(self, api)
+        # ArtistOperations.__init__(self, api)
