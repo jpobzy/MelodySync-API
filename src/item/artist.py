@@ -1,6 +1,5 @@
 from src.item.response import new_response
 from src.app.__innit__ import API
-import webbrowser
 
 class Artist:
     """
@@ -18,8 +17,8 @@ class Artist:
         self.type = artist['type']
         self.uri = artist['uri']
         
-        if not self.followers:
-            self.get_full_artist_details()
+        # if not self.followers:
+        #     self.get_full_artist_details()
         
     def get_full_artist_details(self):
         """
