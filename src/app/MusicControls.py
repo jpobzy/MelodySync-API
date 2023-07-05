@@ -200,22 +200,6 @@ class MusicControls:
                 json = {'uris' : [str(track_uri)]}           
                 new_response.put('/me/player/play', self.api.token, json=json) #start.resume playback in player 
            
-    def search_for_track(self, track_name, track_artist = ""):
-        current_state = self.playback_state()
-        if current_state is not None:
-            params = {
-                "q": f"remaster%20track:{track_name}",
-                "type": ["track"],
-            }
-            if track_artist:
-                params["q"] += f"%20artist:{track_artist}"
-            respo = new_response.get("/search", self.api.token, params=params)
-            if respo != 204:
-                for item in respo['tracks']['items']:
-                    song = item['name']
-                    artist_names = ', '.join([artist_name['name'] for artist_name in item['artists']])
-                    print(f"{song} by {artist_names}")
-
     def queue(self, track_name, track_artist = ""):
         """
         Adds a track given a track name and optional track artist to queue
