@@ -18,7 +18,7 @@ class new_response:
     @staticmethod
     def get(url, token, params=None, next="", json=None):
         """
-        Url starts after https://api.spotify.com/v1/
+        Url starts after https://api.spotify.com/v1
         """
         url = 'https://api.spotify.com/v1' + str(url)
         if next:
@@ -33,7 +33,7 @@ class new_response:
     @staticmethod
     def post(url, token, application_json_headers_bool=False, data=None, json=None):
         """
-        Url starts after https://api.spotify.com/v1/
+        Url starts after https://api.spotify.com/v1
         """
         url = 'https://api.spotify.com/v1' + str(url)
         key = 'Bearer ' + token['access_token']
@@ -47,7 +47,7 @@ class new_response:
     @staticmethod
     def put(url, token, params=None, json=None):
         """
-        Url starts after https://api.spotify.com/v1/
+        Url starts after https://api.spotify.com/v1
         """
         url = 'https://api.spotify.com/v1' + str(url)
         key = 'Bearer ' + token['access_token']
@@ -58,7 +58,7 @@ class new_response:
     @staticmethod
     def delete(url, token, params=None, json=None):
         """
-        Url starts after https://api.spotify.com/v1/
+        Url starts after https://api.spotify.com/v1
         """
         url = 'https://api.spotify.com/v1' + str(url)
         key = 'Bearer ' + token['access_token']
