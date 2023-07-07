@@ -1,5 +1,6 @@
 from .__innit__ import API
 from src.item.response import new_response
+from src.item.track import Track
 
 class MusicControls:
     def __init__(self, api):
@@ -253,3 +254,17 @@ class MusicControls:
                 print('no valid input was given')
        
        
+    def current_queue(self):
+        """
+        Returns recently played tracks
+        
+        """
+        track_list = []
+        response = new_response.get('/me/player/queue', self.api.token)
+        print(len(response['queue']))
+        for track in response['queue']:
+            current_track = Track(track)
+            track_list.append(current_track)
+        for track in track_list:
+            print(f'{track.name} by {track.get_artists_names()}')
+        return track_list
