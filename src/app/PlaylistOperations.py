@@ -10,14 +10,14 @@ class PlaylistOperations:
         self.api = api
         self.id = UserInfo(api).user_id
     
-    def get_playlist_by_name(self, playlist_name):
+    def get_playlist_by_name(self, playlist_name, limit=50):
         """
         Returns a playlist object
         """
         self.api.token_expired()
         if any(playlist_name):
             params = {
-                'limit': 50
+                'limit': limit
             }
             get_users_playlists = new_response.get('/me/playlists', self.api.token, params)
             for i in get_users_playlists['items']:
@@ -77,7 +77,7 @@ class PlaylistOperations:
                 }   
                 new_response.put(f'/playlists/{playlist_id}', self.api.token, json=json)   
       
-    def get_playlist_tracks(self, playlist_name):
+    def get_playlist_tracks(self, playlist_name, limit=100):
         """
         Returns list of tracks (class Track)
         """
@@ -85,7 +85,6 @@ class PlaylistOperations:
             playlist = self.get_playlist_by_name(playlist_name)
             track_total = playlist.tracks['total']
             offset = 0
-            limit = 100
             tracks = []
             next_url = ''
             while offset < track_total:
@@ -100,7 +99,7 @@ class PlaylistOperations:
                 offset += limit
             return tracks
 
-    def get_song_from_playlist(self, playlist_name, track_name, track_artist=''):
+    def get_song_from_playlist(self, playlist_name, track_name, track_artist='', limit=100):
         playlist = self.get_playlist_by_name(playlist_name)
         if not playlist:
             print(f"Playlist '{playlist_name}' not found.")
@@ -108,7 +107,6 @@ class PlaylistOperations:
 
         track_total = playlist.tracks['total']
         offset = 0
-        limit = 100
         next_url = ''
 
         while offset < track_total:

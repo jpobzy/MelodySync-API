@@ -6,10 +6,10 @@ from src.app.AlbumOperations import AlbumOperations
 from src.app.ArtistOperations import ArtistOperations
 from src.app.SearchOperations import Search_operations
 from src.app.__innit__ import API
-
+from src.app.PlaylistGenerator import PlaylistGenerator
 from src.item.album import Album
 
-class App(Album, Search_operations,UserInfo, MusicControls, PlaylistOperations, DatabaseOperations, AlbumOperations, ArtistOperations):
+class App(PlaylistGenerator, Album, Search_operations,UserInfo, MusicControls, PlaylistOperations, DatabaseOperations, AlbumOperations, ArtistOperations):
     def __init__(self):
         api = API()
         UserInfo.__init__(self, api)
@@ -17,6 +17,7 @@ class App(Album, Search_operations,UserInfo, MusicControls, PlaylistOperations, 
         PlaylistOperations.__init__(self, api)
         DatabaseOperations.__init__(self, api)
         Search_operations.__init__(self, api)
+        PlaylistGenerator.__init__(self, api)
         # Search_operations.__init__(self, api)
         
         # AlbumOperations.__init__(self, api)
