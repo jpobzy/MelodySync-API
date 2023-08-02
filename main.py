@@ -30,13 +30,20 @@ def commands():
         runtime = end_time - start_time
         print("Runtime:", runtime, "seconds")  
           
+          
+import random
+
 def main():
     api = App()  # Create an instance of the API class
     # Call the display_name function
     start_time = time.time()
 
-    api.current_track_info()
-    
+    # x = api.generate_playlist(100,"4NHQUGzhtTLFvgF5SZesLK",  "hip-hop", "0c6xIDDpzE81m2q797ordA")
+
+    # print(len(x['tracks']))
+    print()
+    print(api.generate_playlist(10))
+    # print(time.time())
     end_time = time.time()
 
     runtime = end_time - start_time
@@ -45,4 +52,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # commands()
+    

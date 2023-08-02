@@ -8,7 +8,7 @@ from src.app.UserInfo import UserInfo
 class DatabaseOperations:
     def __init__(self, api):
         self.api = api
-        self.user = UserInfo(api)
+        # self.user = UserInfo(api)
         
     def add_playlist_to_database(self, playlist_name, database_name):
         """
@@ -61,4 +61,20 @@ class DatabaseOperations:
                     db.store_song_in_backup_playlist(playlist_id, song_name, artist, track_id)       
         print('Finished creating the backup library')                                     
 
- 
+
+    def create_generated_playlist_library(self):
+        """
+        Creates a backup database library containing all the songs once the user creates a generated playlist
+        """
+        db = Database('generated_playlist.db')
+        db.create_playlist_generator_library()
+        return db
+    
+    
+    def add_playlist_to_generated_playlist_library(self, response, db, playlist_name, track_amount):
+        id_num = db.create_generated_playlist(playlist_name, track_amount)
+        for track in response['tracks']:
+            song_name = track['name']
+            song_artists = (', ').join([artist['name'] for artist in track['artists']])
+            track_id =track['id']
+            db.store_song_in_generated_playlist_library(id_num, song_name, song_artists, track_id)

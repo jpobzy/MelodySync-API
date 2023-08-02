@@ -82,3 +82,38 @@ class Database:
         self.cursor.execute('INSERT INTO backup_songs (playlist_id, song_name, song_artist, track_id) VALUES (?, ?, ?, ?)', (playlist_id, song_name, song_artist, track_id))
         self.conn.commit()
         
+
+###########################################################################################
+################################ PLAYLIST GENERATOR FUNCTIONS ################################
+###########################################################################################
+ 
+
+    def create_playlist_generator_library(self):
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS generated_playlists(
+                playlist_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                playlist_name TEXT,
+                song_amount TEXT
+            )
+        ''')
+        
+        self.cursor.execute('''
+           CREATE TABLE IF NOT EXISTS backup_songs(
+               song_id INTEGER PRIMARY KEY,
+               playlist_id INTEGER,
+               song_name TEXT,
+               song_artist TEXT,
+               track_id TEXT,
+               FOREIGN KEY (playlist_id) REFERENCES generated_playlists (playlist_id)
+           )                 
+        ''')
+        
+    def create_generated_playlist(self, playlist_name, song_amount):
+        self.cursor.execute('INSERT INTO generated_playlists (playlist_name, song_amount) VALUES (?, ?)', ( playlist_name, song_amount))
+        self.conn.commit()
+        return self.cursor.lastrowid
+    
+    def store_song_in_generated_playlist_library(self, playlist_id, song_name, song_artist, track_id):
+        self.cursor.execute('INSERT INTO backup_songs (playlist_id, song_name, song_artist, track_id) VALUES (?, ?, ?, ?)', (playlist_id, song_name, song_artist, track_id))
+        self.conn.commit()
+        

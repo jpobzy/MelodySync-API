@@ -8,8 +8,9 @@ from src.app.SearchOperations import Search_operations
 from src.app.PlaylistOperations import PlaylistOperations
 import time
 from datetime import datetime
-
+from src.app.DatabaseOperations import DatabaseOperations
 import os
+import random
 
 class PlaylistGenerator:
     def __init__(self, api) :
@@ -19,7 +20,7 @@ class PlaylistGenerator:
         return new_response.get('/recommendations/available-genre-seeds',self.api.token)
     
     
-    def generate_playlist(self, track_amount, seed_artists, seed_genres, seed_tracks, country='US'):
+    def main(self, track_amount, seed_artists, seed_genres, seed_tracks, country='US'):
         params = {
            'limit': track_amount, 
             'market' : country,
@@ -71,14 +72,19 @@ class PlaylistGenerator:
         return (artists, genres, tracks)
 
     
-    def main(self, track_amount):
+    def generate_playlist(self, track_amount):
         generate_seed_ids = self.read_and_grab_seeds()
         seed_artists = generate_seed_ids[0]
         seed_genres = generate_seed_ids[1]
         seed_tracks = generate_seed_ids[2]
-        response = self.generate_playlist(track_amount, seed_artists, seed_genres, seed_tracks) 
+        response = self.main(track_amount, seed_artists, seed_genres, seed_tracks) 
+        playlist_name = f'Generated Playlist {str(random.randint(0, 1000))}'
         creation_time = datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
-        new_playlist = PlaylistOperations(self.api).create_playlist('Generated Playlist', f'Created at {creation_time}')
+        new_playlist = PlaylistOperations(self.api).create_playlist(playlist_name, f'Created at {creation_time}')
         song_uri_list = [tracks['uri'] for tracks in response['tracks']]
         PlaylistOperations(self.api).add_songs_to_playlist(playlist_id=new_playlist['id'], song_uri_list=song_uri_list)
-    
+        db = DatabaseOperations(self.api)
+        new_db = db.create_generated_playlist_library()
+        db.add_playlist_to_generated_playlist_library(response,  new_db, playlist_name, track_amount)
+
+            
