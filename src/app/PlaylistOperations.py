@@ -3,7 +3,7 @@ from src.item.response import new_response
 from src.item.playlist import Playlist
 from src.item.track import Track
 from src.app.UserInfo import UserInfo
-import random
+import random, qrcode
 
 class PlaylistOperations:
     def __init__(self, api):
@@ -221,3 +221,12 @@ class PlaylistOperations:
         """
         response = new_response.get(f'/users/{self.id()}/playlists', self.api.token)
         return response['total']
+
+    def create_qr_image_for_playlist(self, playlistname):
+        """
+        Creates a qr code that gives the link of a playlist
+        """
+        playlist_link = self.get_playlist_by_name(playlistname).external_urls['spotify']
+        img = qrcode.make(playlist_link)
+        img.save('qr_images/' + playlistname + '.png')
+        return
